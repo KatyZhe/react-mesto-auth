@@ -12,6 +12,9 @@
 @import url(../blocks/header/__logo/header__logo.css);
 @import url(../blocks/header/__authbox/header__authbox.css);
 @import url(../blocks/header/__login/header__login.css);
+@import url(../blocks/header/__nav/header__nav.css);
+@import url(../blocks/header/__sign-out/header__sign-out.css);
+@import url(../blocks/header/__burger-nav/header__burger-nav.css);
 
 @import url(../blocks/profile/__avatar/profile__avatar.css);
 @import url(../blocks/profile/__info/profile__info.css);

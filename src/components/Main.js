@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import Card from "./Card";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import Header from "./Header.js";
@@ -13,27 +12,14 @@ const Main = ({
   onBasketClick,
   onCardLike,
   onCardDeleteClick,
+  handleSignOut
 }) => {
   const currentUser = useContext(CurrentUserContext);
   const { name, about, avatar, email } = currentUser;
-  const navigate = useNavigate();
 
   return (
     <>
-      <Header>
-        <div className="header__authbox">
-          <p className="header__login">{email} </p>
-          <p
-            onClick={() => {
-              localStorage.removeItem("token");
-              navigate("/sign-in", { replace: true });
-            }}
-            className="login__welcome"
-          >
-            Выйти
-          </p>
-        </div>
-      </Header>
+      <Header title="Выход" email={email} isOpen={true} onSingOut={handleSignOut} />
 
       <main>
         <section className="profile">

@@ -1,49 +1,66 @@
-import useFormValidation from "./useFormValidation.js";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "./Header.js";
 
 const Login = ({ onLogin }) => {
-  const { enteredValues, errors, handleChange } = useFormValidation({});
+  const navigate = useNavigate();
+  const [formValue, setFormValue] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+
+    setFormValue({
+      ...formValue,
+      [name]: value,
+    });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!enteredValues.email || !enteredValues.password) {
+    if (!formValue.email || !formValue.password) {
       return;
     }
-    onLogin(enteredValues);
+    onLogin(formValue);
+  };
+
+  const onTransferRegister = () => {
+    navigate("/sing-up", { replace: true });
   };
 
   return (
-    <div className="login">
-      <h2 className="login__title">Вход</h2>
-      <form className="login__form" onSubmit={handleSubmit} noValidate>
+    <>
+      <Header title="Регистрация" onClick={onTransferRegister} isOpen={false} />
+      <div className="login">
+      <form className="login__form" onSubmit={handleSubmit}>
+        <h1 className="login__title">Вход</h1>
+
         <input
+          id="password"
+          name="email"
           className="login__input"
           type="email"
-          placeholder="Email"
-          name="email"
-          id="email"
-          autoComplete="email"
-          value={enteredValues.email || ""}
-          onChange={handleChange}
           required
+          placeholder="email"
+          value={formValue.email || ""}
+          onChange={handleChange}
         />
-        <span className="auth__error">{errors.email}</span>
         <input
+          id="password"
+          name="password"
           className="login__input"
           type="password"
-          minLength="8"
-          name="password"
-          id="password"
-          placeholder="Пароль"
-          autoComplete="password"
-          value={enteredValues.password || ""}
-          onChange={handleChange}
           required
+          placeholder="password"
+          value={formValue.password || ""}
+          onChange={handleChange}
         />
-        <span className="auth__error">{errors.password}</span>
-        <button type="submit">Войти</button>
-        <span className="auth__login-hint"></span>
+        <button className="popup__button">Войти</button>
       </form>
-    </div>
+      </div>
+    </>
   );
 };
 

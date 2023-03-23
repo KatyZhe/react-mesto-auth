@@ -1,16 +1,38 @@
-import { Link } from "react-router-dom";
-import useFormValidation from "./useFormValidation.js";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Header from "./Header.js";
 
 const Register = ({ onRegister }) => {
-  const { enteredValues, errors, handleChange } = useFormValidation();
+  const navigate = useNavigate();
+  const [formValue, setFormValue] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+
+    setFormValue({
+      ...formValue,
+      [name]: value,
+    });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onRegister(enteredValues);
+    if (!formValue.email || !formValue.password) {
+      return;
+    }
+    onRegister(formValue);
+  };
+
+  const onTransferLogin = () => {
+    navigate("/sing-in", { replace: true });
   };
 
   return (
     <>
+      <Header title="Войти" onClick={onTransferLogin} />
       <div className="login">
         <h2 className="login__title">Регистрация</h2>
         <form className="login__form" onSubmit={handleSubmit}>
@@ -21,11 +43,10 @@ const Register = ({ onRegister }) => {
             type="email"
             placeholder="Email"
             autoComplete="email"
-            value={enteredValues.email}
+            value={formValue.email}
             onChange={handleChange}
             required
           />
-          <span className="login__error">{errors.email}</span>
           <input
             className="login__input"
             id="password"
@@ -34,15 +55,14 @@ const Register = ({ onRegister }) => {
             minLength="8"
             placeholder="Пароль"
             autoComplete="password"
-            value={enteredValues.password}
+            value={formValue.password}
             onChange={handleChange}
             required
           />
-          <span className="login__error">{errors.password}</span>
           <button type="submit">Зарегистрироваться</button>
         </form>
       </div>
-      <Link to="/sign-in" className="auth__login-hint">
+      <Link to="/sign-in" className="login__login-hint">
         Уже зарегистрированы? Войти
       </Link>
     </>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
-import Header from "./Header.js";
 import Footer from "./Footer.js";
 import Main from "./Main.js";
 import ImagePopup from "./ImagePopup.js";
@@ -24,7 +23,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistrationSuccessful, setIsRegistrationSuccessful] =
     useState(false);
-  const [authorizationEmail, setAuthorizationEmail] = useState("");
+  const [email, setEmail] = useState("");
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -44,15 +43,16 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardData]) => {
-        setCurrentUser(userData);
-        setCards(cardData);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`);
-      });
-  }, []);
+    if (isLoggedIn)
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userData, cardData]) => {
+          setCurrentUser(userData);
+          setCards(cardData);
+        })
+        .catch((err) => {
+          console.log(`Ошибка: ${err}`);
+        });
+  }, [isLoggedIn]);
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
@@ -171,6 +171,7 @@ function App() {
     return register(data)
       .then((data) => {
         setIsRegistrationSuccessful(true);
+        setEmail(data.data.email);
         openInfoTooltip();
         navigate("/sign-in", { replace: true });
       })
@@ -186,8 +187,9 @@ function App() {
       .then((data) => {
         setIsLoggedIn(true);
         localStorage.setItem("jwt", data.token);
+        setEmail(data.data.email)
         handleTokenCheck();
-        navigate("/", { replace: true });
+        navigate("/react-mesto-auth", { replace: true });
       })
       .catch((err) => {
         console.log(err);
@@ -210,9 +212,9 @@ function App() {
     }
     getContent(jwt)
       .then((data) => {
-        setAuthorizationEmail(data.data.email);
+        setEmail(data.data.email);
         setIsLoggedIn(true);
-        navigate("/", { replace: true });
+        navigate("/react-mesto-auth", { replace: true });
       })
       .catch((err) => console.log(err));
   };
@@ -223,27 +225,18 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/", { replace: true });
+      navigate("/react-mesto-auth", { replace: true });
     }
   }, [isLoggedIn]);
 
   return (
     <CurrentUserContext.Provider
       value={{
-        currentUser,
-        handleCardLike,
-        cards,
-        setCards,
-        handleCardDelete,
+        currentUser
       }}
     >
       <div>
         <div className="page">
-          <Header
-            loggedIn={isLoggedIn}
-            userEmail={authorizationEmail}
-            onSignOut={handleSignOut}
-          />
           <Routes>
             <Route
               path="/sign-in"
@@ -256,10 +249,10 @@ function App() {
             />
 
             <Route
-              path="/"
+              path="/react-mesto-auth"
               element={
                 <ProtectedRoute
-                  component={Main}
+                  element={Main}
                   loggedIn={isLoggedIn}
                   onEditAvatar={handleEditAvatarClick}
                   onEditProfile={handleEditProfileClick}
@@ -268,6 +261,8 @@ function App() {
                   onCardLike={handleCardLike}
                   onBasketClick={handleCardDeleteClick}
                   cards={cards}
+                  email={email}
+                  onSignOut={handleSignOut}
                 />
               }
             />
