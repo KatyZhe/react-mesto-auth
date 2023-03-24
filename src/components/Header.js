@@ -1,24 +1,31 @@
-import React from 'react';
-import { Link, useLocation } from "react-router-dom";
+import React from "react";
+import { Link, Route, Routes } from "react-router-dom";
 import headerLogo from "../images/header__logo.svg";
 
 function Header({ userEmail, loggedIn, onSignOut }) {
-  const location = useLocation();
 
   return (
     <>
       <header className="header">
         <img src={headerLogo} className="header__logo" alt="Место" />
-        {location.location === "/sign-up" && (
-          <Link className="header__button" to={"/sign-in"}>
-            Войти
-          </Link>
-        )}
-        {location.location === "/sign-in" && (
-          <Link className="header__button" to={"/sign-up"}>
-            Регистрация
-          </Link>
-        )}
+        <Routes>
+          <Route
+            path="/sign-up"
+            element={
+              <Link className="header__button" to="/sign-in">
+                Войти
+              </Link>
+            }
+          />
+          <Route
+            path="/sign-in"
+            element={
+              <Link className="header__button" to="/sign-up">
+                Регистрация
+              </Link>
+            }
+          />
+        </Routes>
         {loggedIn && (
           <nav className="header__nav">
             <span>{userEmail}</span>

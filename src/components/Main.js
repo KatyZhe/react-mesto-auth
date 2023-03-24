@@ -15,7 +15,6 @@ const Main = ({
   handleSignOut
 }) => {
   const currentUser = useContext(CurrentUserContext);
-  const { name, about, avatar, email } = currentUser;
 
   return (
     <>
@@ -25,22 +24,22 @@ const Main = ({
             <button className="profile__edit-avatar" onClick={onEditAvatar}>
               <img
                 className="profile__avatar"
-                src={avatar}
-                style={{ backgroundImage: `url(${avatar})` }}
+                src={currentUser.avatar}
+                style={{ backgroundImage: `url(${currentUser.avatar})` }}
                 alt="аватар"
               />
             </button>
 
             <div className="profile__info">
               <div className="profile__name">
-                <h1 className="profile__user-name">{name}</h1>
+                <h1 className="profile__user-name">{currentUser.name}</h1>
                 <button
                   type="button"
                   className="profile__edit-button"
                   onClick={onEditProfile}
                 ></button>
               </div>
-              <p className="profile__user-info">{about}</p>
+              <p className="profile__user-info">{currentUser.about}</p>
             </div>
           </div>
 

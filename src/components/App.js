@@ -228,9 +228,9 @@ function App() {
 
   return (
     <CurrentUserContext.Provider
-      value={{
-        currentUser,
-      }}
+      value={
+        currentUser
+      }
     >
       <div>
         <div className="page">

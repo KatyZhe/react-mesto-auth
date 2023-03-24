@@ -26,13 +26,8 @@ const Register = ({ onRegister }) => {
     onRegister(formValue);
   };
 
-  const onTransferLogin = () => {
-    navigate("/sign-in", { replace: true });
-  };
-
   return (
     <>
-      <Header title="Войти" onClick={onTransferLogin} />
       <div className="login">
         <h2 className="login__title">Регистрация</h2>
         <form className="login__form" onSubmit={handleSubmit}>
