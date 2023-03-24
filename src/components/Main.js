@@ -19,8 +19,6 @@ const Main = ({
 
   return (
     <>
-      <Header title="Выход" email={email} isOpen={true} onSingOut={handleSignOut} />
-
       <main>
         <section className="profile">
           <div className="profile__user">

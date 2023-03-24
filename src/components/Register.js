@@ -27,7 +27,7 @@ const Register = ({ onRegister }) => {
   };
 
   const onTransferLogin = () => {
-    navigate("/sing-in", { replace: true });
+    navigate("/sign-in", { replace: true });
   };
 
   return (
@@ -59,10 +59,10 @@ const Register = ({ onRegister }) => {
             onChange={handleChange}
             required
           />
-          <button type="submit">Зарегистрироваться</button>
+          <button className="login__button" type="submit">Зарегистрироваться</button>
         </form>
       </div>
-      <Link to="/sign-in" className="login__login-hint">
+      <Link to="/sign-in" className="login__signin-link">
         Уже зарегистрированы? Войти
       </Link>
     </>

@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "./Header.js";
+import React, { useState } from "react";
 
 const Login = ({ onLogin }) => {
-  const navigate = useNavigate();
   const [formValue, setFormValue] = useState({
     email: "",
     password: "",
@@ -26,24 +23,19 @@ const Login = ({ onLogin }) => {
     onLogin(formValue);
   };
 
-  const onTransferRegister = () => {
-    navigate("/sing-up", { replace: true });
-  };
-
   return (
     <>
-      <Header title="Регистрация" onClick={onTransferRegister} isOpen={false} />
       <div className="login">
       <form className="login__form" onSubmit={handleSubmit}>
         <h1 className="login__title">Вход</h1>
 
         <input
-          id="password"
+          id="email"
           name="email"
           className="login__input"
           type="email"
           required
-          placeholder="email"
+          placeholder="Email"
           value={formValue.email || ""}
           onChange={handleChange}
         />
@@ -53,11 +45,11 @@ const Login = ({ onLogin }) => {
           className="login__input"
           type="password"
           required
-          placeholder="password"
+          placeholder="Пароль"
           value={formValue.password || ""}
           onChange={handleChange}
         />
-        <button className="popup__button">Войти</button>
+        <button className="login__button">Войти</button>
       </form>
       </div>
     </>

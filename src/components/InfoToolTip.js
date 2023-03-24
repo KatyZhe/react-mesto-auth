@@ -9,7 +9,7 @@ const InfoTooltip = ({ isOpen, onClose, isSuccess }) => {
         <img
           src={isSuccess ? successIcon : unsuccessIcon}
           alt={
-            isSuccess ? 'Регистрация прошла успешно' : 'Регистрация не прошла'
+            isSuccess ? 'Вы успешно зарегистрировались' : 'Что-то пошло не так'
           }
           className="popup__signup-icon"
         />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
+import Header from "./Header.js";
 import Footer from "./Footer.js";
 import Main from "./Main.js";
 import ImagePopup from "./ImagePopup.js";
@@ -21,8 +22,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRegistrationSuccessful, setIsRegistrationSuccessful] =
-    useState(false);
+  const [isRegistred, setIsRegistred] = useState(false);
   const [email, setEmail] = useState("");
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -43,16 +43,15 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn)
-      Promise.all([api.getUserInfo(), api.getInitialCards()])
-        .then(([userData, cardData]) => {
-          setCurrentUser(userData);
-          setCards(cardData);
-        })
-        .catch((err) => {
-          console.log(`Ошибка: ${err}`);
-        });
-  }, [isLoggedIn]);
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userData, cardData]) => {
+        setCurrentUser(userData);
+        setCards(cardData);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }, []);
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
@@ -170,14 +169,14 @@ function App() {
   const handleRegistration = (data) => {
     return register(data)
       .then((data) => {
-        setIsRegistrationSuccessful(true);
+        setIsRegistred(true);
         setEmail(data.data.email);
         openInfoTooltip();
         navigate("/sign-in", { replace: true });
       })
       .catch((err) => {
         console.log(err);
-        setIsRegistrationSuccessful(false);
+        setIsRegistred(false);
         openInfoTooltip();
       });
   };
@@ -187,9 +186,9 @@ function App() {
       .then((data) => {
         setIsLoggedIn(true);
         localStorage.setItem("jwt", data.token);
-        setEmail(data.data.email)
+        setEmail(data.data.email);
         handleTokenCheck();
-        navigate("/react-mesto-auth", { replace: true });
+        navigate("/", { replace: true });
       })
       .catch((err) => {
         console.log(err);
@@ -197,14 +196,12 @@ function App() {
       });
   };
 
-  // Выход
   const handleSignOut = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
     navigate("/sign-in", { replace: true });
   };
 
-  // Проверка токена
   const handleTokenCheck = () => {
     const jwt = localStorage.getItem("jwt");
     if (!jwt) {
@@ -214,7 +211,7 @@ function App() {
       .then((data) => {
         setEmail(data.data.email);
         setIsLoggedIn(true);
-        navigate("/react-mesto-auth", { replace: true });
+        navigate("/", { replace: true });
       })
       .catch((err) => console.log(err));
   };
@@ -225,18 +222,24 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/react-mesto-auth", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [isLoggedIn]);
 
   return (
     <CurrentUserContext.Provider
       value={{
-        currentUser
+        currentUser,
       }}
     >
       <div>
         <div className="page">
+          <Header
+            loggedIn={isLoggedIn}
+            userEmail={email}
+            onSignOut={handleSignOut}
+          />
+
           <Routes>
             <Route
               path="/sign-in"
@@ -249,10 +252,10 @@ function App() {
             />
 
             <Route
-              path="/react-mesto-auth"
+              path="/"
               element={
                 <ProtectedRoute
-                  element={Main}
+                  component={Main}
                   loggedIn={isLoggedIn}
                   onEditAvatar={handleEditAvatarClick}
                   onEditProfile={handleEditProfileClick}
@@ -304,7 +307,7 @@ function App() {
           <InfoToolTip
             onClose={closeAllPopups}
             isOpen={isInfoTooltipOpen}
-            isSuccess={isRegistrationSuccessful}
+            isSuccess={isRegistred}
           />
         </div>
       </div>
